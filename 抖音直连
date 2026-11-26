@@ -1,0 +1,63 @@
+#!name=抖音小程序&蜜雪冰城直连兜底
+#!desc=抖音登录/点单小程序强制直连，排除MitM，解决"网络异常，请刷新重试"
+#!author=用户
+#!homepage=https://github.com/
+#!system = iOS, iPadOS, macOS
+#!loon_version = 3.3.2(877)
+#!icon = https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Apple.png
+[General]
+# 跳过代理（保留原有常用直连，追加抖音全家桶+点单后端）
+skip-proxy = localhost, *.local, captive.apple.com, id6.me, open.e.189.cn, *.douyin.com, *.snssdk.com, *.byteimg.com, *.bytesmanager.com, *.amemv.com, *.ixigua.com, *.toutiao.com, *.bytedance.com, *.volcengine.com, *.mxbc.com, *.mikecrm.com, *.lonicera.com, *.doudian.com
+# TUN绕过（未开TUN可保留无害）
+bypass-tun = 192.168.0.0/16, 10.0.0.0/8, 127.0.0.0/8, *.douyin.com, *.snssdk.com, *.byteimg.com, *.bytesmanager.com, *.amemv.com, *.ixigua.com, *.toutiao.com, *.bytedance.com, *.volcengine.com, *.mxbc.com, *.mikecrm.com, *.lonicera.com, *.doudian.com
+# 真实IP解析（防DNS污染）
+real-ip = id6.me, open.e.189.cn, *.douyin.com, *.snssdk.com
+# 原有国内银行/服务直连 + 新增抖音系/小程序域名（逗号分隔，支持通配符）
+skip-proxy = www.baidu.com,yunbusiness.ccb.com,wxh.wo.cn,gate.lagou.com,www.abchina.com.cn,www.shanbay.com,login-service.mobile-bank.psbc.com,mobile-bank.psbc.com,id6.me,*.douyin.com,*.snssdk.com,*.byteimg.com,*.bytesmanager.com,*.amemv.com,*.ixigua.com,*.toutiao.com
+
+[MitM]
+# 强制排除抖音/小程序登录接口（'-'开头，绝对不能解密，否则必弹网络异常）
+hostname = -testflight.apple.com, -*.douyin.com, -*.snssdk.com, -*.bytedance.com, -*.volcengine.com, -*.amemv.com, -*.ixigua.com, -*.mxbc.com, -*.mikecrm.com, -*.lonicera.com, -*.doudian.com
+# 返回真实IP（原有 + 抖音系防止一键登录/SDK异常）
+real-ip = easy-login.10099.com.cn,*-update.xoyocdn.com,id6.me,open.e.189.cn,*.douyin.com,*.snssdk.com
+
+# 若开启 TUN 模式，需同步绕过（防止 TUN 强制接管流量）
+bypass-tun = 192.168.0.0/16, 10.0.0.0/8, 127.0.0.0/8, *.douyin.com, *.snssdk.com, *.byteimg.com, *.bytesmanager.com, *.amemv.com
+
+[Rule]
+# 抖音登录/授权/小程序宿主（精确匹配放最前）
+DOMAIN, aweme.snssdk.com, DIRECT
+DOMAIN, toutiao.snssdk.com, DIRECT
+DOMAIN, webcast.snssdk.com, DIRECT
+# 抖音全家桶后缀直连
+DOMAIN-SUFFIX, snssdk.com, DIRECT
+# 原有拦截规则
+DOMAIN, msmp.abchina.com.cn, REJECT
+
+# 抖音/小程序核心域名强制直连（防止被全局代理/规则覆盖）
+DOMAIN-SUFFIX, douyin.com, DIRECT
+DOMAIN-SUFFIX, snssdk.com, DIRECT
+DOMAIN-SUFFIX, byteimg.com, DIRECT
+DOMAIN-SUFFIX, bytesmanager.com, DIRECT
+DOMAIN-SUFFIX, amemv.com, DIRECT
+DOMAIN-SUFFIX, ixigua.com, DIRECT
+DOMAIN-SUFFIX, toutiao.com, DIRECT
+DOMAIN-SUFFIX, bytedance.com, DIRECT
+DOMAIN-SUFFIX, volcengine.com, DIRECT
+# 第三方点单小程序后端（蜜雪冰城等）
+DOMAIN-SUFFIX, mxbc.com, DIRECT
+DOMAIN-SUFFIX, mikecrm.com, DIRECT
+DOMAIN-SUFFIX, lonicera.com, DIRECT
+DOMAIN-SUFFIX, doudian.com, DIRECT
+# 以下保留你原有的其他规则（示例，请替换为自己的实际规则）
+# DOMAIN-SUFFIX, baidu.com, DIRECT
+# FINAL, PROXY
+
+# （可选）屏蔽抖音常见数据上报/广告埋点（不需要可删除）
+# DOMAIN, log.snssdk.com, REJECT
+# DOMAIN, monitor.snssdk.com, REJECT
+# DOMAIN, api.amemv.com, REJECT
+
+[MitM]
+# 不可MitM也不应该被打断连接的域名（保留原 TestFlight + 新增抖音系）
+hostname = -testflight.apple.com, -*.douyin.com, -*.snssdk.com
